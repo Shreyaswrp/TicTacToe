@@ -18,7 +18,6 @@ public class TicTacToe {
 		int n=(int) (Math.random() + 0.5);
 		if(n==1) {
 		System.out.println("Player will proceed");
-
 		turn="X";
 		}else {
 			System.out.println("Computer will proceed");
