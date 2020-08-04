@@ -11,13 +11,24 @@ public class TicTacToe {
 	public static void main(String[] args) {
 		in = new Scanner(System.in);
 		board = new String[9];
-		turn = "X";
+		turn =in.nextLine();
 		String winner = null;
 		populateEmptyBoard();
+
+		int n=(int) (Math.random() + 0.5);
+		if(n==1) {
+		System.out.println("Player will proceed");
+
+		turn="X";
+		}else {
+			System.out.println("Computer will proceed");
+			turn="O";
+		}
 
 		System.out.println("Welcome to 2 Player Tic Tac Toe.");
 		System.out.println("--------------------------------");
 		printBoard();
+		System.out.println(turn +" will play first.");
 	}
 		static void populateEmptyBoard() {
 		for (int a = 0; a < 9; a++) {
@@ -33,5 +44,5 @@ public class TicTacToe {
 		System.out.println("| " + board[6] + " | " + board[7] + " | " + board[8] + " |");
 		System.out.println("/---|---|---\\");
 	}
-	
+
 }
