@@ -1,218 +1,187 @@
-import java.util.Scanner;
-import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
+
+
 public class TicTacToe {
-	//Initializing Varibles 
-	int playerChoice;
-	int computerChoice;
-	int flipCoin;
-	int choice;
-	int position;
-	char playerSymbol;
-	char computerSymbol;
-	String user;
-	char [] [] gameBoard;
-	ArrayList<Integer> playerPosition = new ArrayList<Integer>();
-	ArrayList<Integer> computerPosition = new ArrayList<Integer>();
+
+	static String[] board = new String[9];
+	private static Scanner in;
+	static String playerInput;
+	static String computerInput;
+	static boolean toss;
+	static boolean choiceLetter;
+	static Random random = new Random();
+	static int input;
+	static String turn=null;
 
 	public static void main(String[] args) {
-		TicTacToe tictac = new TicTacToe();
-		System.out.println("Welcome to TicTacToe game!!!\nTo start the game we flip the coin.");
-		tictac.gameBoard();
-	}
 
-	//Here the function printGameBoard is used to print gameBoard aur used to refresh the Board
-	private void gameBoard() {
-		char [] [] gameBoard = {{' ','|',' ','|',' '},
-				{'-','+','-','+','-'},
-				{' ','|',' ','|',' '},
-				{'-','+','-','+','-'},
-				{' ','|',' ','|',' '}};
-		toss(gameBoard);
-	}
+		in = new Scanner(System.in);
+		int computerWinPosition=0;
+		int playerWinPosition=0;
+		createEmptyBoard(); //function call to reset the board
+		chooseLetter();
+		turn=chooseTurn();
 
-	//used to print the TicTacToe board 
-	private void printGameBoard(char [] [] gameBoard) {
-		for (char [] row : gameBoard) {
-			for(char c : row) {
-				System.out.print(c);
+		String win = null;
+		System.out.println("Welcome to Tic Tac Toe Game");
+		System.out.println("--------------------------------");
+
+		displayBoard(); //function call to display board
+
+		//loops till win is null 
+		while (win == null) {
+			if(turn.equals(playerInput)) {
+				System.out.println("Enter a slot number to place "+ playerInput+ " in:");
+				input = in.nextInt();
+				if (!(input > 0 && input <= 9)) {
+					System.out.println("Invalid input; enter slot number:");
+					continue;
+				}
 			}
-			System.out.println();
+			else {
+				System.out.println("Computer's turn");
+				//computerWinPosition=ComputerMoves.checkPosition(board,computerInput);
+				//playerWinPosition=ComputerMoves.checkPosition(board, playerInput);
+				if(computerWinPosition == 0 && playerWinPosition == 0) {
+					input=random.nextInt(10-1)+1;
+				}
+				else if(computerWinPosition != 0) {
+					input=computerWinPosition;
+				}
+				else if(playerWinPosition != 0) {
+					input=playerWinPosition;
+				}
+				System.out.println("Computer's input "+input);
+			}
+			if (board[input-1].equals(String.valueOf(input))) {
+				board[input-1] = turn;
+				displayBoard(); // function call to display board
+				win = winnerCheck(); // function call to check the winner
+				if (turn.equals(playerInput)) {
+					turn = computerInput;
+				} else {
+					turn = playerInput;
+				}
+
+			} else {
+				System.out.println("Slot already taken; enter slot number:");
+				if(turn.equals(computerInput))
+					input=random.nextInt(10-1)+1;
+			}
 		}
-
-	}
-
-	//Here the function toss is used to choose who will begin first player aur Computer.
-	private void toss(char[][] gameBoard) {
-		position = 0;
-		Scanner scan = new Scanner(System.in);
-		Random random = new Random();
-		flipCoin = random.nextInt(2);
-
-		if(flipCoin == 1) {
-			user = "player";
-			System.out.println("Player won the Toss!!!");
-			System.out.println("Enter your Choice among these 0-X or 1-O.");
-			playerChoice = scan.nextInt();
-			eachplaySymbol(playerChoice,user);
-			printGameBoard(gameBoard);
-			System.out.println("Symbol taken by Player:"+playerSymbol);
-			System.out.println("Symbol taken by Computer:"+computerSymbol);
-			playGame(gameBoard);
+		if (win.equalsIgnoreCase("draw")) {
+			System.out.println("It's a draw! Thanks for playing.");
 		} else {
-			user = "computer";
-			System.out.println("Computer won the Toss!!!");
-			computerChoice = random.nextInt(2);
-			eachplaySymbol(computerChoice,user);
-			System.out.println("Symbol taken by Player:"+playerSymbol);
-			System.out.println("Symbol taken by Computer:"+computerSymbol);
-			printGameBoard(gameBoard);
-			playGame(gameBoard);
-		}
-	}
-	//Here this function is used to play the game till the winning , loosing aur tie condition reached 
-	void playGame(char[][] gameBoard) {
-		while (checkWinning()) {
-			Scanner scan = new Scanner(System.in);
-			System.out.print("Enter your Placement (1-9):");
-			int playerPlacement = scan.nextInt();
-			//check that player could not enter the value at place which is already taken
-			while (playerPosition.contains(playerPlacement) || computerPosition.contains(playerPlacement)) {
-				System.out.println("Position is Taken!! Enter a correct Position");
-				playerPlacement = scan.nextInt();
-			}
-			placeChoice(gameBoard,playerPlacement,"player");
-			Random random = new Random();
-			int computerPlacement = random.nextInt(9) + 1;
-			checkWinning();//check that computer could not enter the value at place which is already taken
-			while (playerPosition.contains(computerPlacement) || computerPosition.contains(computerPlacement)) {
-				System.out.println("Position is Taken!! Enter a correct Position");
-				computerPlacement = random.nextInt(9) + 1;
-			}
-			placeChoice(gameBoard,computerPlacement,"computer");
-			printGameBoard(gameBoard);
-			checkWinning();
+			String winner=(win.equals(playerInput)) ? "Player" : "Computer";
+			System.out.println("Congratulations! " + winner + "'s have won! Thanks for playing.");
 		}
 	}
 
-	//Here this function is used to place the symbol X or O according to the selection of player and computer
-	char eachplaySymbol(int choice, String user) {
-		if(user.equals("player")) {
-			if (choice == 0 ) {
-				playerSymbol = 'X';
-				computerSymbol = 'O';
-				return playerSymbol;
-			} else {
-				playerSymbol = 'O';
-				computerSymbol = 'X';
-				return playerSymbol;
-			}
-		} else if(user.equals("computer")){
-			if (choice == 0 ) {
-				computerSymbol = 'X';
-				playerSymbol = 'O';
-				return playerSymbol;
-			} else {
-				computerSymbol = 'O';
-				playerSymbol = 'X';
-				return playerSymbol;
-			}
-		}
-		return computerSymbol;
-	}
+	/*
+	 * Function to choose the letter
+	 */
+	static void chooseLetter() {
+		System.out.println("Select X or O");
+		while(true) {
+		playerInput=in.next();
 
-	//Placing the element  at respected position 
-	void placeChoice (char[][] gameBoard,int position,String user) {
-		char symbol = ' ';
-		if(user.equals("player")) {
-			if (playerSymbol == 'X' ) {
-				symbol = 'X';
-				playerPosition.add(position);
-			} else {
-				symbol = 'O';
-				playerPosition.add(position);
-			}
-		} else {
-			if (computerSymbol == 'X') {
-				symbol = 'X';
-				computerPosition.add(position);
-			} else {
-				symbol = 'O';
-				computerPosition.add(position);
-			}
+		if( playerInput.equals("X") || playerInput.equals("O")) {
+			System.out.println("Player's choice "+playerInput);
+
+			choiceLetter=random.nextBoolean();
+			if(choiceLetter == true && playerInput.equals("O")) 
+				computerInput="X";
+			else
+				computerInput="O";
+				break;
 		}
 
-		switch (position) {
-		case 1: 
-			gameBoard [0][0] = symbol;
-			break;
-		case 2: 
-			gameBoard [0][2] = symbol;
-			break;
-		case 3: 
-			gameBoard [0][4] = symbol;
-			break;
-		case 4: 
-			gameBoard [2][0] = symbol;
-			break;
-		case 5: 
-			gameBoard [2][2] = symbol;
-			break;
-		case 6: 
-			gameBoard [2][4] = symbol;
-			break;
-		case 7: 
-			gameBoard [4][0] = symbol;
-			break;
-		case 8: 
-			gameBoard [4][2] = symbol;
-			break;
-		case 9: 
-			gameBoard [4][4] = symbol;
-			break;
-		default:
-			break;
+		else
+			System.out.println("Invalid Choice !! choose X OR O");
+			continue;
 		}
 	}
 
-	//Here this function is used to check the winning conditions
-	boolean checkWinning() {
-		List<Integer> topRow = Arrays.asList(1,2,3);
-		List<Integer> midRow = Arrays.asList(4,5,6);
-		List<Integer> lastRow = Arrays.asList(7,8,9);
-		List<Integer> leftCol = Arrays.asList(1,4,7);
-		List<Integer> midCol = Arrays.asList(2,5,8);
-		List<Integer> rightCol = Arrays.asList(3,6,9);
-		List<Integer> cross1 = Arrays.asList(1,5,9);
-		List<Integer> cross2 = Arrays.asList(3,5,7);
+	/*
+	  Function Displays the tic tac toe board
+	 */
 
-		List<List> winningConditions = new ArrayList<List>();
-		winningConditions.add(topRow);
-		winningConditions.add(midRow);
-		winningConditions.add(lastRow);
-		winningConditions.add(lastRow);
-		winningConditions.add(leftCol);
-		winningConditions.add(midCol);
-		winningConditions.add(rightCol);
-		winningConditions.add(cross1);
-		winningConditions.add(cross2);
-
-		for(List l : winningConditions) {
-			if(playerPosition.containsAll(l)) {
-				System.out.println("Congratulation you Won!!");
-				return false;
-			} else if(computerPosition.containsAll(l)) {
-				System.out.println("Computer Wins!! Sorry :(");
-				return false;
-			} else if (playerPosition.size() + computerPosition.size() == 9) {
-				System.out.println("Match is Draw!!!");
-				return false;
-			}
-		}
-
-		return true;
+	 static void displayBoard() {
+		System.out.println("| " + board[0] + " | " + board[1] + " | " + board[2] + " |");
+		System.out.println("|-----------|");
+		System.out.println("| " + board[3] + " | " + board[4] + " | " + board[5] + " |");
+		System.out.println("|-----------|");
+		System.out.println("| " + board[6] + " | " + board[7] + " | " + board[8] + " |");
 	}
 
+	/*
+	 * Function to create to reset board 
+	 */
+	static void createEmptyBoard() {
+		for (int i = 0; i < board.length; i++) {
+			board[i] = String.valueOf(i+1);
+		}
+	}
+	static String chooseTurn() {
+		boolean toss=random.nextBoolean();
+		if(toss == true) {
+			System.out.println("Player turn");
+			return playerInput;
+		}
+		else
+			System.out.println("Computer turn");
+			System.out.println(computerInput);
+			return computerInput;
+	}
+	/*
+	 * Function to Check the winner
+	 */
+
+	 static String winnerCheck() {
+
+		for (int i = 0; i < 8; i++) {
+			String result = null;
+			switch (i) {
+			case 0:
+				result = board[0] + board[1] + board[2];
+				break;
+			case 1:
+				result = board[3] + board[4] + board[5];
+				break;
+			case 2:
+				result = board[6] + board[7] + board[8];
+				break;
+			case 3:
+				result = board[0] + board[3] + board[6];
+				break;
+			case 4:
+				result = board[1] + board[4] + board[7];
+				break;
+			case 5:
+				result = board[2] + board[5] + board[8];
+				break;
+			case 6:
+				result = board[0] + board[4] + board[8];
+				break;
+			case 7:
+				result = board[2] + board[4] + board[6];
+				break;
+			}
+			if (result.equals("XXX")) {
+				return "X";
+			} else if (result.equals("OOO")) {
+				return "O";
+			} 
+		}
+		for (int i = 0; i < 9; i++) {
+			if (Arrays.asList(board).contains(String.valueOf(i+1))) {
+				break;
+			}
+			else if (i == 8) return "draw";
+		}
+		return null;
+	}
 }
