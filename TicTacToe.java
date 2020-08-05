@@ -1,175 +1,218 @@
-import java.util.Arrays;
-import java.util.InputMismatchException;
 import java.util.Scanner;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 public class TicTacToe {
-
-	static Scanner in;
-	static String[] board;
-	static String turn;
-
-
-	static String checkWinner() {
-		for (int a = 0; a < 8; a++) {
-			String line = null;
-			switch (a) {
-			case 0:
-				line = board[0] + board[1] + board[2];
-				break;
-			case 1:
-				line = board[3] + board[4] + board[5];
-				break;
-			case 2:
-				line = board[6] + board[7] + board[8];
-				break;
-			case 3:
-				line = board[0] + board[3] + board[6];
-				break;
-			case 4:
-				line = board[1] + board[4] + board[7];
-				break;
-			case 5:
-				line = board[2] + board[5] + board[8];
-				break;
-			case 6:
-				line = board[0] + board[4] + board[8];
-				break;
-			case 7:
-				line = board[2] + board[4] + board[6];
-				break;
-			}
-			if (line.equals("XXX")) {
-				return "X";
-			} else if (line.equals("OOO")) {
-				return "O";
-			}
-		}
-
-		for (int a = 0; a < 9; a++) {
-			if (Arrays.asList(board).contains(String.valueOf(a+1))) {
-				break;
-			}
-			else if (a == 8) return "draw";
-		}
-
-		System.out.println(turn + "'s turn; enter a slot number to place " + turn + " in:");
-		return null;
-	}
-
-
-	// to initialize the board
-	static void populateEmptyBoard() {
-
-         	for (int a = 0; a < 9; a++) {
-                board[a] = String.valueOf(a+1);
-                }
-	}
-
-	//to print the board back to all empty values
-	static void printBoard() {
-
-                System.out.println("/---|---|---\\");
-                System.out.println("| " + board[0] + " | " + board[1] + " | " + board[2] + " |");
-                System.out.println("|-----------|");
-                System.out.println("| " + board[3] + " | " + board[4] + " | " + board[5] + " |");
-                System.out.println("|-----------|");
-                System.out.println("| " + board[6] + " | " + board[7] + " | " + board[8] + " |");
-                System.out.println("/---|---|---\\");
-
-        }
+	//Initializing Varibles 
+	int playerChoice;
+	int computerChoice;
+	int flipCoin;
+	int choice;
+	int position;
+	char playerSymbol;
+	char computerSymbol;
+	String user;
+	char [] [] gameBoard;
+	ArrayList<Integer> playerPosition = new ArrayList<Integer>();
+	ArrayList<Integer> computerPosition = new ArrayList<Integer>();
 
 	public static void main(String[] args) {
+		TicTacToe tictac = new TicTacToe();
+		System.out.println("Welcome to TicTacToe game!!!\nTo start the game we flip the coin.");
+		tictac.gameBoard();
+	}
 
-		in = new Scanner(System.in);
-		Scanner str= new Scanner(System.in);
-		board = new String[9];
-		String winner = null;
-		int player=0;
-		int computer=0;
-		//static String turn=null;
-		populateEmptyBoard();
+	//Here the function printGameBoard is used to print gameBoard aur used to refresh the Board
+	private void gameBoard() {
+		char [] [] gameBoard = {{' ','|',' ','|',' '},
+				{'-','+','-','+','-'},
+				{' ','|',' ','|',' '},
+				{'-','+','-','+','-'},
+				{' ','|',' ','|',' '}};
+		toss(gameBoard);
+	}
 
-		String computerChar= null;
-		String playerChar= null;
-
-		System.out.println("Enter a number between 0 and 1");
-		int choice=in.nextInt();
-		int n=(int) (Math.random() + 0.5);
-		//checking if the user won the toss or not
-		if(choice==n) {
-		System.out.println("Player will proceed");
-		player=1;
-		//Letting player choose a character between X and O"
-		System.out.println("Enter a character between X and O");
-		playerChar=str.nextLine();
-		turn=playerChar;
-		String t = "X";
-		if(playerChar.equals(t))
-			computerChar = "O";
-		else
-			computerChar="X";
-
-		}
-		else {
-
-			System.out.println("Computer will proceed");
-			 computer=1;
-			//Letting the computer choose randomly X and O
-			int result=(int) (Math.random() + 0.5);
-			if(result == 1){
-			computerChar="0";
-			playerChar="X";
+	//used to print the TicTacToe board 
+	private void printGameBoard(char [] [] gameBoard) {
+		for (char [] row : gameBoard) {
+			for(char c : row) {
+				System.out.print(c);
 			}
-			else{
-			computerChar="X";
-			playerChar="O";
-			}
-			turn=computerChar;
+			System.out.println();
 		}
 
-		System.out.println("Welcome to 2 Player Tic Tac Toe.");
-		System.out.println("--------------------------------");
-		//showing the board to the player
-		printBoard();
-		if( player == 1){
-		System.out.println("Player  will play first. Enter a slot number to place" +turn +" in:");
-		}
-		if(computer == 1){
-		System.out.println("Computer  will play first. Enter a slot number to place" +turn +" in:");
-		}
+	}
 
+	//Here the function toss is used to choose who will begin first player aur Computer.
+	private void toss(char[][] gameBoard) {
+		position = 0;
+		Scanner scan = new Scanner(System.in);
+		Random random = new Random();
+		flipCoin = random.nextInt(2);
 
-		while (winner == null) {
-			int numInput;
-			try {
-				numInput = in.nextInt();
-				if (!(numInput > 0 && numInput <= 9)) {
-					System.out.println("Invalid input; re-enter slot number:");
-					continue;
-				}
-			} catch (InputMismatchException e) {
-				System.out.println("Invalid input; re-enter slot number:");
-				continue;
-			}
-			if (board[numInput-1].equals(String.valueOf(numInput))) {
-				board[numInput-1] = turn;
-				if (turn.equals("X")) {
-					turn = "O";
-				} else {
-					turn = "X";
-				}
-				printBoard();
-				winner = checkWinner();
-			} else {
-				System.out.println("Slot already taken; re-enter slot number:");
-				continue;
-			}
-		}
-		if (winner.equalsIgnoreCase("draw")) {
-			System.out.println("It's a draw! Thanks for playing.");
+		if(flipCoin == 1) {
+			user = "player";
+			System.out.println("Player won the Toss!!!");
+			System.out.println("Enter your Choice among these 0-X or 1-O.");
+			playerChoice = scan.nextInt();
+			eachplaySymbol(playerChoice,user);
+			printGameBoard(gameBoard);
+			System.out.println("Symbol taken by Player:"+playerSymbol);
+			System.out.println("Symbol taken by Computer:"+computerSymbol);
+			playGame(gameBoard);
 		} else {
-			System.out.println("Congratulations! " + winner + "'s have won! Thanks for playing.");
+			user = "computer";
+			System.out.println("Computer won the Toss!!!");
+			computerChoice = random.nextInt(2);
+			eachplaySymbol(computerChoice,user);
+			System.out.println("Symbol taken by Player:"+playerSymbol);
+			System.out.println("Symbol taken by Computer:"+computerSymbol);
+			printGameBoard(gameBoard);
+			playGame(gameBoard);
 		}
 	}
+	//Here this function is used to play the game till the winning , loosing aur tie condition reached 
+	void playGame(char[][] gameBoard) {
+		while (checkWinning()) {
+			Scanner scan = new Scanner(System.in);
+			System.out.print("Enter your Placement (1-9):");
+			int playerPlacement = scan.nextInt();
+			//check that player could not enter the value at place which is already taken
+			while (playerPosition.contains(playerPlacement) || computerPosition.contains(playerPlacement)) {
+				System.out.println("Position is Taken!! Enter a correct Position");
+				playerPlacement = scan.nextInt();
+			}
+			placeChoice(gameBoard,playerPlacement,"player");
+			Random random = new Random();
+			int computerPlacement = random.nextInt(9) + 1;
+			checkWinning();//check that computer could not enter the value at place which is already taken
+			while (playerPosition.contains(computerPlacement) || computerPosition.contains(computerPlacement)) {
+				System.out.println("Position is Taken!! Enter a correct Position");
+				computerPlacement = random.nextInt(9) + 1;
+			}
+			placeChoice(gameBoard,computerPlacement,"computer");
+			printGameBoard(gameBoard);
+			checkWinning();
+		}
 	}
 
+	//Here this function is used to place the symbol X or O according to the selection of player and computer
+	char eachplaySymbol(int choice, String user) {
+		if(user.equals("player")) {
+			if (choice == 0 ) {
+				playerSymbol = 'X';
+				computerSymbol = 'O';
+				return playerSymbol;
+			} else {
+				playerSymbol = 'O';
+				computerSymbol = 'X';
+				return playerSymbol;
+			}
+		} else if(user.equals("computer")){
+			if (choice == 0 ) {
+				computerSymbol = 'X';
+				playerSymbol = 'O';
+				return playerSymbol;
+			} else {
+				computerSymbol = 'O';
+				playerSymbol = 'X';
+				return playerSymbol;
+			}
+		}
+		return computerSymbol;
+	}
+
+	//Placing the element  at respected position 
+	void placeChoice (char[][] gameBoard,int position,String user) {
+		char symbol = ' ';
+		if(user.equals("player")) {
+			if (playerSymbol == 'X' ) {
+				symbol = 'X';
+				playerPosition.add(position);
+			} else {
+				symbol = 'O';
+				playerPosition.add(position);
+			}
+		} else {
+			if (computerSymbol == 'X') {
+				symbol = 'X';
+				computerPosition.add(position);
+			} else {
+				symbol = 'O';
+				computerPosition.add(position);
+			}
+		}
+
+		switch (position) {
+		case 1: 
+			gameBoard [0][0] = symbol;
+			break;
+		case 2: 
+			gameBoard [0][2] = symbol;
+			break;
+		case 3: 
+			gameBoard [0][4] = symbol;
+			break;
+		case 4: 
+			gameBoard [2][0] = symbol;
+			break;
+		case 5: 
+			gameBoard [2][2] = symbol;
+			break;
+		case 6: 
+			gameBoard [2][4] = symbol;
+			break;
+		case 7: 
+			gameBoard [4][0] = symbol;
+			break;
+		case 8: 
+			gameBoard [4][2] = symbol;
+			break;
+		case 9: 
+			gameBoard [4][4] = symbol;
+			break;
+		default:
+			break;
+		}
+	}
+
+	//Here this function is used to check the winning conditions
+	boolean checkWinning() {
+		List<Integer> topRow = Arrays.asList(1,2,3);
+		List<Integer> midRow = Arrays.asList(4,5,6);
+		List<Integer> lastRow = Arrays.asList(7,8,9);
+		List<Integer> leftCol = Arrays.asList(1,4,7);
+		List<Integer> midCol = Arrays.asList(2,5,8);
+		List<Integer> rightCol = Arrays.asList(3,6,9);
+		List<Integer> cross1 = Arrays.asList(1,5,9);
+		List<Integer> cross2 = Arrays.asList(3,5,7);
+
+		List<List> winningConditions = new ArrayList<List>();
+		winningConditions.add(topRow);
+		winningConditions.add(midRow);
+		winningConditions.add(lastRow);
+		winningConditions.add(lastRow);
+		winningConditions.add(leftCol);
+		winningConditions.add(midCol);
+		winningConditions.add(rightCol);
+		winningConditions.add(cross1);
+		winningConditions.add(cross2);
+
+		for(List l : winningConditions) {
+			if(playerPosition.containsAll(l)) {
+				System.out.println("Congratulation you Won!!");
+				return false;
+			} else if(computerPosition.containsAll(l)) {
+				System.out.println("Computer Wins!! Sorry :(");
+				return false;
+			} else if (playerPosition.size() + computerPosition.size() == 9) {
+				System.out.println("Match is Draw!!!");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+}
