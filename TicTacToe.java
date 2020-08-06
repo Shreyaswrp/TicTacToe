@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 
 public class TicTacToe {
-
+	
 	static String[] board = new String[9];
 	private static Scanner in;
 	static String playerInput;
@@ -14,7 +14,7 @@ public class TicTacToe {
 	static Random random = new Random();
 	static int input;
 	static String turn=null;
-
+	
 	public static void main(String[] args) {
 		TicTacToe game = new TicTacToe();
 		in = new Scanner(System.in);
@@ -23,13 +23,13 @@ public class TicTacToe {
 		game.createEmptyBoard(); //function call to reset the board
 		chooseLetter();
 		turn=game.chooseTurn();
-
+		
 		String win = null;
 		System.out.println("Welcome to Tic Tac Toe Game");
 		System.out.println("--------------------------------");
-
+		
 		game.displayBoard(); //function call to display board
-
+		
 		//loops till win is null 
 		while (win == null) {
 			if(turn.equals(playerInput)) {
@@ -42,8 +42,7 @@ public class TicTacToe {
 			}
 			else {
 				System.out.println("Computer's turn");
-				//computerWinPosition=ComputerMoves.checkPosition(board,computerInput);
-				//playerWinPosition=ComputerMoves.checkPosition(board, playerInput);
+
 				if(computerWinPosition == 0 && playerWinPosition == 0) {
 					input=random.nextInt(10-1)+1;
 				}
@@ -64,7 +63,7 @@ public class TicTacToe {
 				} else {
 					turn = playerInput;
 				}
-
+				
 			} else {
 				System.out.println("Slot already taken; enter slot number:");
 				if(turn.equals(computerInput))
@@ -78,7 +77,8 @@ public class TicTacToe {
 			System.out.println("Congratulations! " + winner + "'s have won! Thanks for playing.");
 		}
 	}
-
+		
+	
 	/*
 	 * Function to choose the letter
 	 */
@@ -86,10 +86,10 @@ public class TicTacToe {
 		System.out.println("Select X or O");
 		while(true) {
 		playerInput=in.next();
-
+		
 		if( playerInput.equals("X") || playerInput.equals("O")) {
 			System.out.println("Player's choice "+playerInput);
-
+			
 			choiceLetter=random.nextBoolean();
 			if(choiceLetter == true && playerInput.equals("O")) 
 				computerInput="X";
@@ -97,17 +97,17 @@ public class TicTacToe {
 				computerInput="O";
 				break;
 		}
-
+		
 		else
 			System.out.println("Invalid Choice !! choose X OR O");
 			continue;
 		}
 	}
-
+	
 	/*
 	  Function Displays the tic tac toe board
 	 */
-
+	
 	void displayBoard() {
 		System.out.println("| " + board[0] + " | " + board[1] + " | " + board[2] + " |");
 		System.out.println("|-----------|");
@@ -115,7 +115,7 @@ public class TicTacToe {
 		System.out.println("|-----------|");
 		System.out.println("| " + board[6] + " | " + board[7] + " | " + board[8] + " |");
 	}
-
+	
 	/*
 	 * Function to create to reset board 
 	 */
@@ -138,9 +138,9 @@ public class TicTacToe {
 	/*
 	 * Function to Check the winner
 	 */
-
+	
 	String winnerCheck() {
-
+		
 		for (int i = 0; i < 8; i++) {
 			String result = null;
 			switch (i) {
