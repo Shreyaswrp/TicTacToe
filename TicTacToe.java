@@ -63,7 +63,7 @@ public class TicTacToe {
 				} else {
 					turn = playerInput;
 				}
-				
+
 			} else {
 				System.out.println("Slot already taken; enter slot number:");
 				if(turn.equals(computerInput))
@@ -77,8 +77,7 @@ public class TicTacToe {
 			System.out.println("Congratulations! " + winner + "'s have won! Thanks for playing.");
 		}
 	}
-		
-	
+
 	/*
 	 * Function to choose the letter
 	 */
