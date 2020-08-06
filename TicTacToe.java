@@ -247,7 +247,7 @@ public class TicTacToe {
 			board[i] = String.valueOf(i+1);
 		}
 	}
-	
+
 	/*
 	 * Function to choose who plays first
 	 */
@@ -262,7 +262,7 @@ public class TicTacToe {
 			System.out.println(computerInput);
 			return computerInput;
 	}
-	
+
 	/*
 	 * Function to get corner position or center position
 	 */
